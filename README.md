@@ -1,1 +1,0 @@
-# ansan-food-wheel
