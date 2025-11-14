@@ -208,12 +208,21 @@
             padding: 25px;
             background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
             border-radius: 18px;
-            min-height: 140px;
+            min-height: 400px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             border: 2px solid #A5D6A7;
+        }
+
+        .result-image {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .result-food {
@@ -434,6 +443,10 @@
 
             .menu-list {
                 grid-template-columns: 1fr;
+            }
+
+            .result-image {
+                max-width: 250px;
             }
         }
     </style>
@@ -751,6 +764,7 @@
             spinCount++;
             
             document.getElementById('result').innerHTML = `
+                <img src="https://i1.ruliweb.com/ori/21/10/11/17c6e2cb5127e319.jpg" alt="마이고!" class="result-image">
                 <div class="result-food">🎉 ${food.name}</div>
                 <div class="result-restaurant">📍 ${food.restaurant}</div>
                 <div class="result-price">💰 ${food.price}</div>
