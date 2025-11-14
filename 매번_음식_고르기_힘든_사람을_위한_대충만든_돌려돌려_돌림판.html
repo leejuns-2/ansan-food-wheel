@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍽️ 안산 맛집 메뉴 추천 돌림판</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background: linear-gradient(135deg, #2E7D32 0%, #43A047 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: #2E7D32;
+            margin-bottom: 8px;
+            font-size: 2.2em;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid #A5D6A7;
+        }
+
+        .info-text {
+            color: #2E7D32;
+            font-size: 0.95em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 2px solid #A5D6A7;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover {
+            border-color: #2E7D32;
+            color: #2E7D32;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #2E7D32 0%, #43A047 100%);
+            color: white;
+            border-color: #2E7D32;
+        }
+
+        .roulette-container {
+            position: relative;
+            margin: 35px auto;
+        }
+
+        .roulette {
+            width: 400px;
+            height: 400px;
+            border: 10px solid #2E7D32;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.3);
+        }
+
+        .roulette-item {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7em;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+            padding: 8px;
+            line-height: 1.2;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 35px solid #FF5722;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+            z-index: 10;
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 5px solid #2E7D32;
+            border-radius: 50%;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #2E7D32 0%, #43A047 100%);
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            font-size: 1.15em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.5);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .secondary-btn {
+            background: white;
+            color: #2E7D32;
+            border: 2px solid #2E7D32;
+            box-shadow: none;
+        }
+
+        .secondary-btn:hover {
+            background: #E8F5E9;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border-radius: 18px;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #A5D6A7;
+        }
+
+        .result-food {
+            font-size: 2.2em;
+            font-weight: 800;
+            color: #2E7D32;
+            margin-bottom: 8px;
+        }
+
+        .result-restaurant {
+            font-size: 1.3em;
+            color: #43A047;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .result-price {
+            font-size: 1.1em;
+            color: #FF5722;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .result-category {
+            font-size: 1em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 18px;
+            border-radius: 15px;
+            border: 2px solid #A5D6A7;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-weight: 800;
+            color: #2E7D32;
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 600;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.7em;
+            }
+            
+            .roulette {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .roulette-item {
+                font-size: 0.55em;
+            }
+
+            .center-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: 800;
+            color: #2E7D32;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .menu-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .menu-item {
+            background: #E8F5E9;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #A5D6A7;
+            font-size: 0.9em;
+        }
+
+        .menu-name {
+            font-weight: 700;
+            color: #2E7D32;
+            margin-bottom: 3px;
+        }
+
+        .menu-restaurant {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .menu-price {
+            font-size: 0.85em;
+            color: #FF5722;
+            font-weight: 600;
+        }
+
+        .close {
+            color: #999;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 20px;
+        }
+
+        .close:hover {
+            color: #2E7D32;
+        }
+
+        @media (max-width: 500px) {
+            .menu-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ 안산 맛집 돌림판</h1>
+            <p class="subtitle">8,000~10,000원대 실제 맛집 95곳</p>
+        </div>
+
+        <div class="info-box">
+            <div class="info-text">📍 안산 지역 배달·방문 가능 맛집</div>
+            <div class="info-text">💰 8,000~10,000원대 가성비 메뉴 95가지</div>
+        </div>
+
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterCategory('전체')">전체 (95)</button>
+            <button class="filter-btn" onclick="filterCategory('한식')">한식 (30)</button>
+            <button class="filter-btn" onclick="filterCategory('중식')">중식 (20)</button>
+            <button class="filter-btn" onclick="filterCategory('일식')">일식 (15)</button>
+            <button class="filter-btn" onclick="filterCategory('양식')">양식 (15)</button>
+            <button class="filter-btn" onclick="filterCategory('분식')">분식 (10)</button>
+            <button class="filter-btn" onclick="filterCategory('햄버거')">햄버거 (5)</button>
+        </div>
+
+        <div class="roulette-container">
+            <div class="pointer"></div>
+            <div class="roulette" id="roulette"></div>
+            <div class="center-circle">🎰</div>
+        </div>
+
+        <div class="btn-container">
+            <button id="spinBtn" onclick="spin()">돌리기! 🎲</button>
+            <button class="secondary-btn" onclick="showAllMenu()">전체메뉴 📋</button>
+        </div>
+
+        <div class="result" id="result">
+            <div style="color: #999; font-weight: 600;">오늘의 메뉴를 추천받으세요!</div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="spinCount">0</div>
+                <div class="stat-label">돌린 횟수</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="menuCount">95</div>
+                <div class="stat-label">메뉴 수</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="currentFilter">전체</div>
+                <div class="stat-label">선택 필터</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="modal-header">📋 안산 전체 메뉴</div>
+            <div class="menu-list" id="menuList"></div>
+        </div>
+    </div>
+
+    <script>
+        const allFoods = [
+            // 한식 (30개)
+            {name: "김치찌개백반", restaurant: "88제육 선부점", price: "10,000원", category: "한식"},
+            {name: "된장찌개백반", restaurant: "은식당", price: "8,000원", category: "한식"},
+            {name: "제육덮밥", restaurant: "88제육 선부점", price: "8,000원", category: "한식"},
+            {name: "불고기덮밥", restaurant: "다원밥상", price: "7,000원", category: "한식"},
+            {name: "돼지불고기백반", restaurant: "폭식주의보", price: "8,000원", category: "한식"},
+            {name: "비빔밥", restaurant: "어울림돌솥밥", price: "8,000원", category: "한식"},
+            {name: "순두부찌개", restaurant: "한식배달전문점", price: "9,000원", category: "한식"},
+            {name: "순두부우삼겹전골", restaurant: "한식배달전문점", price: "10,000원", category: "한식"},
+            {name: "감자탕", restaurant: "성포24시감자탕", price: "8,000원", category: "한식"},
+            {name: "부대찌개", restaurant: "존슨부대찌개", price: "9,000원", category: "한식"},
+            {name: "육개장", restaurant: "듬박이찌개", price: "9,000원", category: "한식"},
+            {name: "국밥", restaurant: "밥심이찌개마을", price: "9,000원", category: "한식"},
+            {name: "갈비탕", restaurant: "원산갈비탕", price: "10,000원", category: "한식"},
+            {name: "설렁탕", restaurant: "목육탕", price: "9,000원", category: "한식"},
+            {name: "닭도리탕", restaurant: "조선닭도리탕", price: "10,000원", category: "한식"},
+            {name: "보쌈정식", restaurant: "제주총각족발보쌈", price: "10,000원", category: "한식"},
+            {name: "족발", restaurant: "야들야들한보약족발", price: "10,000원", category: "한식"},
+            {name: "찜닭", restaurant: "다원밥상", price: "10,000원", category: "한식"},
+            {name: "쭈꾸미볶음", restaurant: "바다직화쭈꾸미", price: "10,000원", category: "한식"},
+            {name: "낙지볶음", restaurant: "동태랑낙지랑", price: "10,000원", category: "한식"},
+            {name: "백반정식", restaurant: "길손집 시골밥상", price: "8,000원", category: "한식"},
+            {name: "간장게장백반", restaurant: "길손집 시골밥상", price: "10,000원", category: "한식"},
+            {name: "돌솥밥정식", restaurant: "어울림돌솥밥", price: "9,000원", category: "한식"},
+            {name: "오리불고기", restaurant: "소담골 오리마을", price: "10,000원", category: "한식"},
+            {name: "쌈밥정식", restaurant: "윤식당", price: "9,000원", category: "한식"},
+            {name: "해물찌개", restaurant: "한식배달전문점", price: "10,000원", category: "한식"},
+            {name: "고등어구이정식", restaurant: "성포24시감자탕", price: "10,000원", category: "한식"},
+            {name: "제육볶음정식", restaurant: "88제육 선부점", price: "8,000원", category: "한식"},
+            {name: "된장백반", restaurant: "만석골", price: "8,000원", category: "한식"},
+            {name: "비지찌개", restaurant: "밥심이찌개마을", price: "8,000원", category: "한식"},
+            
+            // 중식 (20개)
+            {name: "짜장면", restaurant: "길림성", price: "7,000원", category: "중식"},
+            {name: "짬뽕", restaurant: "짬뽕지존", price: "8,000원", category: "중식"},
+            {name: "간짜장", restaurant: "백억반점", price: "8,000원", category: "중식"},
+            {name: "탕수육", restaurant: "백억반점", price: "10,000원", category: "중식"},
+            {name: "깐풍기", restaurant: "팔도반점", price: "10,000원", category: "중식"},
+            {name: "볶음밥", restaurant: "팔도반점", price: "8,000원", category: "중식"},
+            {name: "짬짜면", restaurant: "길림성", price: "8,000원", category: "중식"},
+            {name: "마라탕", restaurant: "빠지지마라", price: "10,000원", category: "중식"},
+            {name: "양장피", restaurant: "진해원", price: "10,000원", category: "중식"},
+            {name: "유산슬", restaurant: "팔도반점", price: "10,000원", category: "중식"},
+            {name: "군만두", restaurant: "수경왕만두찐빵", price: "7,000원", category: "중식"},
+            {name: "쟁반짜장", restaurant: "길림성", price: "8,000원", category: "중식"},
+            {name: "해물짬뽕", restaurant: "짬뽕지존", price: "9,000원", category: "중식"},
+            {name: "크림짬뽕", restaurant: "팔도반점", price: "10,000원", category: "중식"},
+            {name: "칠리짜장", restaurant: "팔도반점", price: "9,000원", category: "중식"},
+            {name: "해물볶음밥", restaurant: "팔도반점", price: "9,000원", category: "중식"},
+            {name: "중화덮밥", restaurant: "팔도반점", price: "9,000원", category: "중식"},
+            {name: "멘보샤", restaurant: "팔도반점", price: "10,000원", category: "중식"},
+            {name: "계란볶음밥", restaurant: "빠지지마라", price: "8,000원", category: "중식"},
+            {name: "마라샹궈", restaurant: "빠지지마라", price: "10,000원", category: "중식"},
+            
+            // 일식 (15개)
+            {name: "돈까스정식", restaurant: "이가돈가스전문점", price: "8,000원", category: "일식"},
+            {name: "치즈돈까스", restaurant: "돈기부여", price: "9,000원", category: "일식"},
+            {name: "함박스테이크", restaurant: "이가돈가스전문점", price: "10,000원", category: "일식"},
+            {name: "반반돈까스", restaurant: "돈기부여", price: "10,000원", category: "일식"},
+            {name: "양파돈까스", restaurant: "혜화동돈까스극장", price: "9,000원", category: "일식"},
+            {name: "매운크림돈까스", restaurant: "혜화동돈까스극장", price: "10,000원", category: "일식"},
+            {name: "왕돈까스", restaurant: "30cm옛날왕돈까스", price: "10,000원", category: "일식"},
+            {name: "모듬초밥", restaurant: "스시일기", price: "10,000원", category: "일식"},
+            {name: "연어초밥", restaurant: "통큰스시", price: "10,000원", category: "일식"},
+            {name: "우동정식", restaurant: "감성키친 원곡점", price: "8,000원", category: "일식"},
+            {name: "냉면", restaurant: "하늘냉면", price: "8,000원", category: "일식"},
+            {name: "카츠동", restaurant: "홍셰프돈까스", price: "9,000원", category: "일식"},
+            {name: "생선가스정식", restaurant: "이가돈가스전문점", price: "10,000원", category: "일식"},
+            {name: "경양식돈까스", restaurant: "홍익돈까스", price: "9,000원", category: "일식"},
+            {name: "육회비빔밥", restaurant: "이자카야호", price: "10,000원", category: "일식"},
+            
+            // 양식 (15개)
+            {name: "까르보나라", restaurant: "빈체로", price: "10,000원", category: "양식"},
+            {name: "크림파스타", restaurant: "포크너", price: "9,000원", category: "양식"},
+            {name: "토마토파스타", restaurant: "빈체로", price: "9,000원", category: "양식"},
+            {name: "알리오올리오", restaurant: "포크너", price: "9,000원", category: "양식"},
+            {name: "봉골레파스타", restaurant: "그릴리언", price: "10,000원", category: "양식"},
+            {name: "로제파스타", restaurant: "롤링파스타", price: "10,000원", category: "양식"},
+            {name: "새우크림파스타", restaurant: "빈체로", price: "10,000원", category: "양식"},
+            {name: "리조또", restaurant: "투파인드피터", price: "10,000원", category: "양식"},
+            {name: "뇨끼", restaurant: "어썸레스토", price: "10,000원", category: "양식"},
+            {name: "크림리조또", restaurant: "투파인드피터", price: "10,000원", category: "양식"},
+            {name: "오일파스타", restaurant: "그남자의이태리식당", price: "9,000원", category: "양식"},
+            {name: "알프레도파스타", restaurant: "뽁식당", price: "10,000원", category: "양식"},
+            {name: "페스토파스타", restaurant: "포크너", price: "10,000원", category: "양식"},
+            {name: "해물파스타", restaurant: "다이너", price: "10,000원", category: "양식"},
+            {name: "감바스", restaurant: "그릴리언", price: "10,000원", category: "양식"},
+            
+            // 분식 (10개)
+            {name: "떡볶이", restaurant: "맛짱분식", price: "6,000원", category: "분식"},
+            {name: "김밥", restaurant: "빠바기 꼬마김밥", price: "5,000원", category: "분식"},
+            {name: "라볶이", restaurant: "할머니가래떡볶이", price: "7,000원", category: "분식"},
+            {name: "치즈떡볶이", restaurant: "맛짱분식", price: "7,000원", category: "분식"},
+            {name: "참치김밥", restaurant: "빠바기 꼬마김밥", price: "6,000원", category: "분식"},
+            {name: "쫄면", restaurant: "고돼지", price: "7,000원", category: "분식"},
+            {name: "순대국밥", restaurant: "경기순대국", price: "8,000원", category: "분식"},
+            {name: "튀김세트", restaurant: "맛짱분식", price: "8,000원", category: "분식"},
+            {name: "유부초밥", restaurant: "빠바기 꼬마김밥", price: "6,000원", category: "분식"},
+            {name: "가래떡볶이", restaurant: "할머니가래떡볶이", price: "7,000원", category: "분식"},
+            
+            // 햄버거 (5개)
+            {name: "불고기버거세트", restaurant: "다이너", price: "9,000원", category: "햄버거"},
+            {name: "치즈버거세트", restaurant: "다이너", price: "9,000원", category: "햄버거"},
+            {name: "베이컨버거세트", restaurant: "다이너", price: "10,000원", category: "햄버거"},
+            {name: "치킨버거세트", restaurant: "다이너", price: "9,000원", category: "햄버거"},
+            {name: "더블버거세트", restaurant: "다이너", price: "10,000원", category: "햄버거"},
+        ];
+
+        const colors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
+            '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B739', '#52B788',
+            '#FF8FAB', '#70C1B3', '#F67280', '#C06C84', '#6C5CE7',
+            '#FD79A8', '#FDCB6E', '#00B894', '#E17055', '#A29BFE',
+            '#FF7675', '#74B9FF', '#55EFC4', '#FFEAA7', '#DFE6E9',
+            '#FD79A8', '#6C5CE7', '#00B894', '#FDCB6E', '#E17055',
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
+            '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B739', '#52B788'
+        ];
+
+        let currentFilter = '전체';
+        let filteredFoods = [...allFoods];
+        let spinning = false;
+        let spinCount = 0;
+
+        function filterCategory(category) {
+            currentFilter = category;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.includes(category)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            if (category === '전체') {
+                filteredFoods = [...allFoods];
+            } else {
+                filteredFoods = allFoods.filter(food => food.category === category);
+            }
+
+            createRoulette();
+            document.getElementById('menuCount').textContent = filteredFoods.length;
+            document.getElementById('currentFilter').textContent = category;
+        }
+
+        function createRoulette() {
+            const roulette = document.getElementById('roulette');
+            roulette.innerHTML = '';
+            
+            const itemAngle = 360 / filteredFoods.length;
+
+            filteredFoods.forEach((food, index) => {
+                const item = document.createElement('div');
+                item.className = 'roulette-item';
+                item.style.background = colors[index % colors.length];
+                item.style.transform = `rotate(${itemAngle * index}deg) skewY(${90 - itemAngle}deg)`;
+                
+                const textSpan = document.createElement('span');
+                textSpan.style.transform = `skewY(${-90 + itemAngle}deg) rotate(${itemAngle / 2}deg)`;
+                textSpan.style.display = 'block';
+                textSpan.innerHTML = `${food.name}<br><small>${food.restaurant}</small>`;
+                
+                item.appendChild(textSpan);
+                roulette.appendChild(item);
+            });
+        }
+
+        function spin() {
+            if (spinning) return;
+            
+            spinning = true;
+            document.getElementById('spinBtn').disabled = true;
+
+            const roulette = document.getElementById('roulette');
+            const randomIndex = Math.floor(Math.random() * filteredFoods.length);
+            const itemAngle = 360 / filteredFoods.length;
+            
+            const minRotation = 360 * 7;
+            const targetRotation = minRotation + (360 - (itemAngle * randomIndex) - itemAngle / 2);
+            
+            roulette.style.transform = `rotate(${targetRotation}deg)`;
+
+            setTimeout(() => {
+                spinning = false;
+                document.getElementById('spinBtn').disabled = false;
+                showResult(filteredFoods[randomIndex]);
+            }, 4000);
+        }
+
+        function showResult(food) {
+            spinCount++;
+            
+            document.getElementById('result').innerHTML = `
+                <div class="result-food">🎉 ${food.name}</div>
+                <div class="result-restaurant">📍 ${food.restaurant}</div>
+                <div class="result-price">💰 ${food.price}</div>
+                <div class="result-category">${food.category}</div>
+            `;
+            
+            document.getElementById('spinCount').textContent = spinCount;
+        }
+
+        function showAllMenu() {
+            const modal = document.getElementById('menuModal');
+            const menuList = document.getElementById('menuList');
+            
+            menuList.innerHTML = '';
+            
+            const displayFoods = currentFilter === '전체' ? allFoods : filteredFoods;
+            
+            displayFoods.forEach(food => {
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item';
+                menuItem.innerHTML = `
+                    <div class="menu-name">${food.name}</div>
+                    <div class="menu-restaurant">${food.restaurant}</div>
+                    <div class="menu-price">${food.price} · ${food.category}</div>
+                `;
+                menuList.appendChild(menuItem);
+            });
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('menuModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('menuModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        createRoulette();
+    </script>
+</body>
+</html>
