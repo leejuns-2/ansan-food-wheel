@@ -165,6 +165,7 @@
             gap: 15px;
             justify-content: center;
             margin-top: 25px;
+            flex-wrap: wrap;
         }
 
         button {
@@ -270,39 +271,6 @@
             font-weight: 600;
         }
 
-        @media (max-width: 700px) {
-            .container {
-                padding: 25px;
-            }
-            
-            h1 {
-                font-size: 1.7em;
-            }
-            
-            .roulette {
-                width: 300px;
-                height: 300px;
-            }
-            
-            .roulette-item {
-                font-size: 0.55em;
-            }
-
-            .center-circle {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5em;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-container {
-                flex-direction: column;
-            }
-        }
-
         .modal {
             display: none;
             position: fixed;
@@ -346,6 +314,7 @@
             border-radius: 10px;
             border: 2px solid #A5D6A7;
             font-size: 0.9em;
+            position: relative;
         }
 
         .menu-name {
@@ -366,6 +335,28 @@
             font-weight: 600;
         }
 
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #FF5722;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8em;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-btn:hover {
+            background: #E64A19;
+        }
+
         .close {
             color: #999;
             float: right;
@@ -379,7 +370,68 @@
             color: #2E7D32;
         }
 
-        @media (max-width: 500px) {
+        .add-form {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2E7D32;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #A5D6A7;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #2E7D32;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.7em;
+            }
+            
+            .roulette {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .roulette-item {
+                font-size: 0.55em;
+            }
+
+            .center-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+
             .menu-list {
                 grid-template-columns: 1fr;
             }
@@ -390,22 +442,22 @@
     <div class="container">
         <div class="header">
             <h1>🍽️ 안산 맛집 돌림판</h1>
-            <p class="subtitle">8,000~10,000원대 실제 맛집 95곳</p>
+            <p class="subtitle">메뉴 추가/삭제 가능</p>
         </div>
 
         <div class="info-box">
             <div class="info-text">📍 안산 지역 배달·방문 가능 맛집</div>
-            <div class="info-text">💰 8,000~10,000원대 가성비 메뉴 95가지</div>
+            <div class="info-text">💰 8,000~10,000원대 가성비 메뉴</div>
         </div>
 
         <div class="filter-container">
-            <button class="filter-btn active" onclick="filterCategory('전체')">전체 (95)</button>
-            <button class="filter-btn" onclick="filterCategory('한식')">한식 (30)</button>
-            <button class="filter-btn" onclick="filterCategory('중식')">중식 (20)</button>
-            <button class="filter-btn" onclick="filterCategory('일식')">일식 (15)</button>
-            <button class="filter-btn" onclick="filterCategory('양식')">양식 (15)</button>
-            <button class="filter-btn" onclick="filterCategory('분식')">분식 (10)</button>
-            <button class="filter-btn" onclick="filterCategory('햄버거')">햄버거 (5)</button>
+            <button class="filter-btn active" onclick="filterCategory('전체')">전체 (<span id="totalCount">95</span>)</button>
+            <button class="filter-btn" onclick="filterCategory('한식')">한식 (<span id="한식Count">30</span>)</button>
+            <button class="filter-btn" onclick="filterCategory('중식')">중식 (<span id="중식Count">20</span>)</button>
+            <button class="filter-btn" onclick="filterCategory('일식')">일식 (<span id="일식Count">15</span>)</button>
+            <button class="filter-btn" onclick="filterCategory('양식')">양식 (<span id="양식Count">15</span>)</button>
+            <button class="filter-btn" onclick="filterCategory('분식')">분식 (<span id="분식Count">10</span>)</button>
+            <button class="filter-btn" onclick="filterCategory('햄버거')">햄버거 (<span id="햄버거Count">5</span>)</button>
         </div>
 
         <div class="roulette-container">
@@ -416,7 +468,9 @@
 
         <div class="btn-container">
             <button id="spinBtn" onclick="spin()">돌리기! 🎲</button>
+            <button class="secondary-btn" onclick="showAddMenu()">메뉴추가 ➕</button>
             <button class="secondary-btn" onclick="showAllMenu()">전체메뉴 📋</button>
+            <button class="secondary-btn" onclick="resetMenu()">초기화 🔄</button>
         </div>
 
         <div class="result" id="result">
@@ -439,17 +493,52 @@
         </div>
     </div>
 
+    <!-- 메뉴 추가 모달 -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <div class="modal-header">➕ 새 메뉴 추가</div>
+            <form class="add-form" onsubmit="addNewMenu(event)">
+                <div class="form-group">
+                    <label>메뉴명 *</label>
+                    <input type="text" id="newMenuName" required placeholder="예: 돈까스정식">
+                </div>
+                <div class="form-group">
+                    <label>음식점명 *</label>
+                    <input type="text" id="newRestaurant" required placeholder="예: 맛있는집">
+                </div>
+                <div class="form-group">
+                    <label>가격 *</label>
+                    <input type="text" id="newPrice" required placeholder="예: 8,000원">
+                </div>
+                <div class="form-group">
+                    <label>카테고리 *</label>
+                    <select id="newCategory" required>
+                        <option value="">선택하세요</option>
+                        <option value="한식">한식</option>
+                        <option value="중식">중식</option>
+                        <option value="일식">일식</option>
+                        <option value="양식">양식</option>
+                        <option value="분식">분식</option>
+                        <option value="햄버거">햄버거</option>
+                    </select>
+                </div>
+                <button type="submit" style="margin-top: 10px;">추가하기</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 전체 메뉴 모달 -->
     <div id="menuModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <div class="modal-header">📋 안산 전체 메뉴</div>
+            <div class="modal-header">📋 전체 메뉴 (삭제 가능)</div>
             <div class="menu-list" id="menuList"></div>
         </div>
     </div>
 
     <script>
-        const allFoods = [
-            // 한식 (30개)
+        const defaultFoods = [
             {name: "김치찌개백반", restaurant: "88제육 선부점", price: "10,000원", category: "한식"},
             {name: "된장찌개백반", restaurant: "은식당", price: "8,000원", category: "한식"},
             {name: "제육덮밥", restaurant: "88제육 선부점", price: "8,000원", category: "한식"},
@@ -480,8 +569,6 @@
             {name: "제육볶음정식", restaurant: "88제육 선부점", price: "8,000원", category: "한식"},
             {name: "된장백반", restaurant: "만석골", price: "8,000원", category: "한식"},
             {name: "비지찌개", restaurant: "밥심이찌개마을", price: "8,000원", category: "한식"},
-            
-            // 중식 (20개)
             {name: "짜장면", restaurant: "길림성", price: "7,000원", category: "중식"},
             {name: "짬뽕", restaurant: "짬뽕지존", price: "8,000원", category: "중식"},
             {name: "간짜장", restaurant: "백억반점", price: "8,000원", category: "중식"},
@@ -502,8 +589,6 @@
             {name: "멘보샤", restaurant: "팔도반점", price: "10,000원", category: "중식"},
             {name: "계란볶음밥", restaurant: "빠지지마라", price: "8,000원", category: "중식"},
             {name: "마라샹궈", restaurant: "빠지지마라", price: "10,000원", category: "중식"},
-            
-            // 일식 (15개)
             {name: "돈까스정식", restaurant: "이가돈가스전문점", price: "8,000원", category: "일식"},
             {name: "치즈돈까스", restaurant: "돈기부여", price: "9,000원", category: "일식"},
             {name: "함박스테이크", restaurant: "이가돈가스전문점", price: "10,000원", category: "일식"},
@@ -519,8 +604,6 @@
             {name: "생선가스정식", restaurant: "이가돈가스전문점", price: "10,000원", category: "일식"},
             {name: "경양식돈까스", restaurant: "홍익돈까스", price: "9,000원", category: "일식"},
             {name: "육회비빔밥", restaurant: "이자카야호", price: "10,000원", category: "일식"},
-            
-            // 양식 (15개)
             {name: "까르보나라", restaurant: "빈체로", price: "10,000원", category: "양식"},
             {name: "크림파스타", restaurant: "포크너", price: "9,000원", category: "양식"},
             {name: "토마토파스타", restaurant: "빈체로", price: "9,000원", category: "양식"},
@@ -536,8 +619,6 @@
             {name: "페스토파스타", restaurant: "포크너", price: "10,000원", category: "양식"},
             {name: "해물파스타", restaurant: "다이너", price: "10,000원", category: "양식"},
             {name: "감바스", restaurant: "그릴리언", price: "10,000원", category: "양식"},
-            
-            // 분식 (10개)
             {name: "떡볶이", restaurant: "맛짱분식", price: "6,000원", category: "분식"},
             {name: "김밥", restaurant: "빠바기 꼬마김밥", price: "5,000원", category: "분식"},
             {name: "라볶이", restaurant: "할머니가래떡볶이", price: "7,000원", category: "분식"},
@@ -548,8 +629,6 @@
             {name: "튀김세트", restaurant: "맛짱분식", price: "8,000원", category: "분식"},
             {name: "유부초밥", restaurant: "빠바기 꼬마김밥", price: "6,000원", category: "분식"},
             {name: "가래떡볶이", restaurant: "할머니가래떡볶이", price: "7,000원", category: "분식"},
-            
-            // 햄버거 (5개)
             {name: "불고기버거세트", restaurant: "다이너", price: "9,000원", category: "햄버거"},
             {name: "치즈버거세트", restaurant: "다이너", price: "9,000원", category: "햄버거"},
             {name: "베이컨버거세트", restaurant: "다이너", price: "10,000원", category: "햄버거"},
@@ -562,16 +641,46 @@
             '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B739', '#52B788',
             '#FF8FAB', '#70C1B3', '#F67280', '#C06C84', '#6C5CE7',
             '#FD79A8', '#FDCB6E', '#00B894', '#E17055', '#A29BFE',
-            '#FF7675', '#74B9FF', '#55EFC4', '#FFEAA7', '#DFE6E9',
-            '#FD79A8', '#6C5CE7', '#00B894', '#FDCB6E', '#E17055',
-            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
-            '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B739', '#52B788'
+            '#FF7675', '#74B9FF', '#55EFC4', '#FFEAA7', '#DFE6E9'
         ];
 
+        let allFoods = [];
         let currentFilter = '전체';
-        let filteredFoods = [...allFoods];
+        let filteredFoods = [];
         let spinning = false;
         let spinCount = 0;
+
+        // 로컬 스토리지에서 메뉴 불러오기
+        function loadFoods() {
+            const saved = localStorage.getItem('ansanFoods');
+            if (saved) {
+                allFoods = JSON.parse(saved);
+            } else {
+                allFoods = [...defaultFoods];
+                saveFoods();
+            }
+            filteredFoods = [...allFoods];
+            updateCategoryCounts();
+        }
+
+        // 로컬 스토리지에 메뉴 저장
+        function saveFoods() {
+            localStorage.setItem('ansanFoods', JSON.stringify(allFoods));
+        }
+
+        // 카테고리별 개수 업데이트
+        function updateCategoryCounts() {
+            const counts = {};
+            allFoods.forEach(food => {
+                counts[food.category] = (counts[food.category] || 0) + 1;
+            });
+            
+            document.getElementById('totalCount').textContent = allFoods.length;
+            Object.keys(counts).forEach(cat => {
+                const elem = document.getElementById(cat + 'Count');
+                if (elem) elem.textContent = counts[cat];
+            });
+        }
 
         function filterCategory(category) {
             currentFilter = category;
@@ -617,7 +726,7 @@
         }
 
         function spin() {
-            if (spinning) return;
+            if (spinning || filteredFoods.length === 0) return;
             
             spinning = true;
             document.getElementById('spinBtn').disabled = true;
@@ -651,6 +760,37 @@
             document.getElementById('spinCount').textContent = spinCount;
         }
 
+        function showAddMenu() {
+            document.getElementById('addModal').style.display = 'block';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+            document.getElementById('newMenuName').value = '';
+            document.getElementById('newRestaurant').value = '';
+            document.getElementById('newPrice').value = '';
+            document.getElementById('newCategory').value = '';
+        }
+
+        function addNewMenu(event) {
+            event.preventDefault();
+            
+            const newFood = {
+                name: document.getElementById('newMenuName').value,
+                restaurant: document.getElementById('newRestaurant').value,
+                price: document.getElementById('newPrice').value,
+                category: document.getElementById('newCategory').value
+            };
+            
+            allFoods.push(newFood);
+            saveFoods();
+            updateCategoryCounts();
+            filterCategory(currentFilter);
+            closeAddModal();
+            
+            alert('메뉴가 추가되었습니다! 🎉');
+        }
+
         function showAllMenu() {
             const modal = document.getElementById('menuModal');
             const menuList = document.getElementById('menuList');
@@ -659,10 +799,11 @@
             
             const displayFoods = currentFilter === '전체' ? allFoods : filteredFoods;
             
-            displayFoods.forEach(food => {
+            displayFoods.forEach((food, index) => {
                 const menuItem = document.createElement('div');
                 menuItem.className = 'menu-item';
                 menuItem.innerHTML = `
+                    <button class="delete-btn" onclick="deleteMenu(${allFoods.indexOf(food)})">✕</button>
                     <div class="menu-name">${food.name}</div>
                     <div class="menu-restaurant">${food.restaurant}</div>
                     <div class="menu-price">${food.price} · ${food.category}</div>
@@ -673,17 +814,43 @@
             modal.style.display = 'block';
         }
 
+        function deleteMenu(index) {
+            if (confirm('이 메뉴를 삭제하시겠습니까?')) {
+                allFoods.splice(index, 1);
+                saveFoods();
+                updateCategoryCounts();
+                filterCategory(currentFilter);
+                showAllMenu();
+            }
+        }
+
         function closeModal() {
             document.getElementById('menuModal').style.display = 'none';
         }
 
-        window.onclick = function(event) {
-            const modal = document.getElementById('menuModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
+        function resetMenu() {
+            if (confirm('모든 메뉴를 초기화하시겠습니까? (사용자 추가 메뉴도 삭제됩니다)')) {
+                allFoods = [...defaultFoods];
+                saveFoods();
+                updateCategoryCounts();
+                filterCategory('전체');
+                alert('메뉴가 초기화되었습니다! 🔄');
             }
         }
 
+        window.onclick = function(event) {
+            const menuModal = document.getElementById('menuModal');
+            const addModal = document.getElementById('addModal');
+            if (event.target == menuModal) {
+                menuModal.style.display = 'none';
+            }
+            if (event.target == addModal) {
+                addModal.style.display = 'none';
+            }
+        }
+
+        // 초기화
+        loadFoods();
         createRoulette();
     </script>
 </body>
